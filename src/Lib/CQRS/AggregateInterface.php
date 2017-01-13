@@ -22,4 +22,6 @@ interface AggregateInterface
     public function setEventBus(EventBus $eventBus);
 
     public function getUuid();
+
+    public function makeSnapshotEvent();
 }

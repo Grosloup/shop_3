@@ -16,4 +16,8 @@ interface EventStoreInterface
     public function getCurrentPlayHead($uuid);
 
     public function saveEvent(Event $event, AggregateInterface $aggregate);
+
+    public function canStoreSnapshot();
+
+    public function snapshot($uuid);
 }

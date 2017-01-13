@@ -23,16 +23,24 @@ class EventStore implements EventStoreInterface, LoggerAwareInterface
      * @var \Lib\CQRS\EventStorageInterface
      */
     private $eventStorage;
+    /*
+     * TODO snapshotStorage !!
+     */
+    /**
+     * @var SnapshotStorage
+     */
+    private $snapshotStorage;
 
     /**
      * EventStore constructor.
      *
      * @param EventStorageInterface $eventStorage
      */
-    public function __construct(EventStorageInterface $eventStorage)
+    public function __construct(EventStorageInterface $eventStorage, SnapshotStorage $snapshotStorage = null)
     {
 
         $this->eventStorage = $eventStorage;
+        $this->snapshotStorage = $snapshotStorage;
     }
 
     /**
@@ -58,7 +66,21 @@ class EventStore implements EventStoreInterface, LoggerAwareInterface
             throw new InvalidUuidException();
         }
 
-        return $this->eventStorage->getStream($uuid);
+        if ($this->snapshotStorage) {
+
+            $lastSnaphot = $this->snapshotStorage->getLastSnapShot($uuid);
+            if ( ! empty($lastSnaphot)) {
+                $stream = $this->eventStorage->getStreamFromPlayhead($uuid, $lastSnaphot["playhead"] + 1);
+
+                array_unshift($stream, $lastSnaphot);
+            } else {
+                $stream = $this->eventStorage->getStream($uuid);
+            }
+        } else {
+            $stream = $this->eventStorage->getStream($uuid);
+        }
+
+        return $stream;
     }
 
     /**
@@ -84,5 +106,15 @@ class EventStore implements EventStoreInterface, LoggerAwareInterface
     public function saveEvent(Event $event, AggregateInterface $aggregate)
     {
         return $this->eventStorage->saveEvent($event);
+    }
+
+    public function canStoreSnapshot()
+    {
+        return $this->snapshotStorage !== null;
+    }
+
+    public function snapshot($uuid)
+    {
+        // TODO: Implement snapshot() method.
     }
 }

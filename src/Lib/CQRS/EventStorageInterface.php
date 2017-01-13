@@ -16,4 +16,6 @@ interface EventStorageInterface
     public function getPlayhead($string);
 
     public function saveEvent(Event $event);
+
+    public function getStreamFromPlayhead($uuid, $playhead);
 }

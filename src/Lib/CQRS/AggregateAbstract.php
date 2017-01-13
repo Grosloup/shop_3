@@ -57,7 +57,7 @@ abstract class AggregateAbstract implements AggregateInterface, LoggerAwareInter
                     ($event["createdAt"] instanceof \DateTime) ? $event["createdAt"] : new \DateTime(
                         $event["createdAt"]
                     )
-                //
+
                 );
                 $static->apply($evtInstance, false);
                 $static->events[] = $evtInstance;
@@ -85,15 +85,6 @@ abstract class AggregateAbstract implements AggregateInterface, LoggerAwareInter
         }
     }
 
-    public function makeSnapshot()
-    {
-        $payloads = json_encode($this->getPayloads());
-        $event    = new Event(get_class($this), $this->uuid, $this->playhead, $payloads);
-        // TODO save snapshot !!
-    }
-
-    abstract public function getPayloads();
-
     /**
      * @param Event $event
      *
@@ -114,8 +105,23 @@ abstract class AggregateAbstract implements AggregateInterface, LoggerAwareInter
 
         $this->eventStore->saveEvent($event, $this);
 
+        if ($this->eventStore->canStoreSnapshot() && ($this->playhead % 1000 == 0)) {
+            $this->eventStore->snapshot($this->makeSnapshotEvent());
+        }
+
         $this->eventBus->dispatch($event, $this);
     }
+
+    public function makeSnapshotEvent()
+    {
+        $payloads = json_encode($this->getPayloads());
+        $event    = new Event(get_class($this), $this->uuid, $this->playhead, $payloads);
+
+        // TODO save snapshot !!
+        return $event;
+    }
+
+    abstract public function getPayloads();
 
     /**
      * @return int

@@ -65,4 +65,9 @@ class DoctrineEventStorage implements EventStorageInterface
         $this->entityManager->persist($esr);
         $this->entityManager->flush();
     }
+
+    public function getStreamFromPlayhead($uuid, $playhead)
+    {
+        // TODO: Implement getStreamFromPlayhead() method.
+    }
 }
