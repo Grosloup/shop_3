@@ -1,0 +1,19 @@
+shop_backend_homepage:
+    path:     /
+    defaults: { _controller: ShopBackendBundle:Default:index }
+
+
+shop_backend_products_homepage:
+    path: /products
+    defaults: { _controller: ShopBackendBundle:Product:index }
+    methods: ['get']
+shop_backend_products_create:
+    path: /products/create
+    defaults: { _controller: ShopBackendBundle:Product:create }
+    methods: ['get','post']
+shop_backend_products_update:
+    path: /products/update/{uuid}
+    defaults: { _controller: ShopBackendBundle:Product:update }
+    methods: ['get','post']
+    requirements:
+        uuid: "[a-z0-9-]+"

@@ -1,0 +1,68 @@
+{% extends 'ShopBackendBundle:Layouts:master.html.twig' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Nouveau produit</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="well">
+                    <a href="{{ path('shop_backend_products_homepage') }}" class="btn btn-default"><i
+                                class="fa fa-chevron-left"></i> Retour</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {{ form_start(form, {attr: {novalidate: false}}) }}
+                {{ form_errors(form) }}
+                <div class="form-group {% if form.name.vars.errors|length>0 %}has-error{% endif %}">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name, {attr:{class:"form-control"}}) }}
+                    {{ form_errors(form.name) }}
+                </div>
+                <div class="form-group {% if form.name.vars.errors|length>0 %}has-error{% endif %}">
+                    {{ form_label(form.reference) }}
+                    {{ form_widget(form.reference, {attr:{class:"form-control"}}) }}
+                    {{ form_errors(form.reference) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description, {attr:{class:"form-control"}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form_label(form.price) }}
+                            {{ form_widget(form.price, {attr:{class:"form-control"}}) }}
+                            {{ form_errors(form.price) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_label(form.measure) }}
+                            {{ form_widget(form.measure, {attr:{class:"form-control"}}) }}
+                            {{ form_errors(form.measure) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_label(form.unit) }}
+                            {{ form_widget(form.unit, {attr:{class:"form-control"}}) }}
+                            {{ form_errors(form.unit) }}
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    {{ form_widget(form.submit,{attr:{class:"btn btn-success"}}) }}
+                </div>
+                {{ form_rest(form) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

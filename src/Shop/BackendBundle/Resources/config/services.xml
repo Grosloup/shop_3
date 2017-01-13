@@ -1,0 +1,99 @@
+<?xml version="1.0" ?>
+
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://symfony.com/schema/dic/services"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+
+    <parameters>
+        <parameter key="cqrs.listeners" type="collection">
+            <parameter key="Tests\Dummy\ProductNameChanged" type="collection">
+                <parameter>Shop\BackendBundle\Aggregate\Product\ProductListener</parameter>
+                <parameter>test</parameter>
+            </parameter>
+
+        </parameter>
+    </parameters>
+
+    <services>
+
+        <service id="product_doctrine_hook" class="Shop\BackendBundle\Aggregate\Product\ProductDoctrineHook">
+            <argument type="service" id="doctrine.orm.default_entity_manager"/>
+        </service>
+        <service id="cqrs.event_storage.doctrine" class="Lib\CQRS\DoctrineEventStorage">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument>Shop\BackendBundle\Entity\EventStoreRow</argument>
+        </service>
+        <service id="cqrs.listener.product" class="Shop\BackendBundle\Aggregate\Product\ProductListener">
+            <call method="addHook">
+                <argument type="service" id="product_doctrine_hook"/>
+            </call>
+        </service>
+        <service id="cqrs.event_bus" class="Lib\CQRS\EventBus">
+            <call method="registerListeners">
+                <argument type="collection">
+                    <argument key="Shop\BackendBundle\Aggregate\Product\ProductCreated" type="collection">
+                        <argument type="service" id="cqrs.listener.product"/>
+                        <argument>onProductCreated</argument>
+                    </argument>
+                    <argument key="Shop\BackendBundle\Aggregate\Product\ProductNameChanged" type="collection">
+                        <argument type="service" id="cqrs.listener.product"/>
+                        <argument>onProductUpdated</argument>
+                    </argument>
+                    <argument key="Shop\BackendBundle\Aggregate\Product\ProductDescriptionChanged" type="collection">
+                        <argument type="service" id="cqrs.listener.product"/>
+                        <argument>onProductUpdated</argument>
+                    </argument>
+                    <argument key="Shop\BackendBundle\Aggregate\Product\ProductPriceChanged" type="collection">
+                        <argument type="service" id="cqrs.listener.product"/>
+                        <argument>onProductUpdated</argument>
+                    </argument>
+
+                </argument>
+            </call>
+            <call method="setLogger">
+                <argument type="service" id="logger"/>
+            </call>
+        </service>
+
+        <service id="cqrs.commandhandler.create_product"
+                 class="Shop\BackendBundle\Aggregate\Product\CreateProductCommandHandler">
+            <argument type="service" id="cqrs.event_store"/>
+            <argument type="service" id="cqrs.event_bus"/>
+        </service>
+        <service id="cqrs.commandhandler.change_name_product"
+                 class="Shop\BackendBundle\Aggregate\Product\ChangeNameCommandHandler">
+            <argument type="service" id="cqrs.event_store"/>
+            <argument type="service" id="cqrs.event_bus"/>
+        </service>
+        <service id="cqrs.commandhandler.change_price_product"
+                 class="Shop\BackendBundle\Aggregate\Product\ChangePriceCommandHandler">
+            <argument type="service" id="cqrs.event_store"/>
+            <argument type="service" id="cqrs.event_bus"/>
+        </service>
+        <service id="cqrs.commandhandler.change_description_product"
+                 class="Shop\BackendBundle\Aggregate\Product\ChangeDescriptionCommandHandler">
+            <argument type="service" id="cqrs.event_store"/>
+            <argument type="service" id="cqrs.event_bus"/>
+        </service>
+
+
+        <service id="cqrs.command_bus" class="Lib\CQRS\CommandBus">
+            <call method="registerHandler">
+                <argument type="service" id="cqrs.commandhandler.create_product"/>
+            </call>
+            <call method="registerHandler">
+                <argument type="service" id="cqrs.commandhandler.change_name_product"/>
+            </call>
+            <call method="registerHandler">
+                <argument type="service" id="cqrs.commandhandler.change_price_product"/>
+            </call>
+            <call method="registerHandler">
+                <argument type="service" id="cqrs.commandhandler.change_description_product"/>
+            </call>
+        </service>
+        <service id="cqrs.event_store" class="Lib\CQRS\EventStore">
+            <argument type="service" id="cqrs.event_storage.doctrine"/>
+        </service>
+    </services>
+</container>

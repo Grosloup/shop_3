@@ -1,0 +1,52 @@
+{% extends "ShopBackendBundle:Layouts:master.html.twig" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Page produits</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="well">
+                    <a href="{{ path('shop_backend_products_create') }}" class="btn btn-default"><i
+                                class="fa fa-plus"></i> Nouveau produit</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-stripped">
+                    <thead>
+                    <tr>
+                        <th>Réf</th>
+                        <th>Intitulé</th>
+                        <th>Prix</th>
+                        <th>Taxe</th>
+                        <th>Description</th>
+                        <th colspan="2">actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ product.reference }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.price }} pour {{ product.unit }} {{ product.measure }}</td>
+                            <td>{{ product.tax }}</td>
+                            <td>{{ product.description }}</td>
+                            <td><a href="{{ path('shop_backend_products_update', {uuid: product.uuid}) }}">éditer</a>
+                            </td>
+                            <td><a href="">supprimer</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
