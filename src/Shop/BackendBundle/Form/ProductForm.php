@@ -2,6 +2,7 @@
 
 namespace Shop\BackendBundle\Form;
 
+use Lib\ValueObject\Cost;
 use Shop\BackendBundle\Model\Product;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -25,17 +26,7 @@ class ProductForm extends AbstractType
                 ChoiceType::class,
                 [
                     "label"   => "Unité de mesure",
-                    "choices" => [
-                        "unité"       => "unit",
-                        "g"           => "g",
-                        "kg"          => "kg",
-                        "tonne"       => "tone",
-                        "centimètre"  => "centimeter",
-                        "mètre"       => "meter",
-                        "mètre carré" => "square meter",
-                        "litre"       => "liter",
-                        "mètre cube"  => "cubic meter",
-                    ],
+                    "choices" => Cost::$measures,
                 ]
             )
             ->add("unit", TextType::class, ["label" => "Quantité par unité de mesure*"])

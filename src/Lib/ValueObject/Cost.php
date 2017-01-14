@@ -7,6 +7,7 @@
  */
 
 namespace Lib\ValueObject;
+use Webmozart\Assert\Assert;
 
 
 /**
@@ -15,7 +16,17 @@ namespace Lib\ValueObject;
  */
 class Cost implements CostInterface, \JsonSerializable
 {
-
+    public static $measures = [
+        "unité"       => "unit",
+        "g"           => "g",
+        "kg"          => "kg",
+        "tonne"       => "tone",
+        "centimètre"  => "centimeter",
+        "mètre"       => "meter",
+        "mètre carré" => "square meter",
+        "litre"       => "liter",
+        "mètre cube"  => "cubic meter",
+    ];
     /**
      * @var string
      */
@@ -57,6 +68,14 @@ class Cost implements CostInterface, \JsonSerializable
         $this->measure  = $measure;
         $this->unit     = $unit;
         $this->tax      = $tax;
+    }
+
+    private function checkPrice($price)
+    {
+        Assert::float($price, "Price is not a valid number");
+        Assert::greaterThanEq($price, 0, "Price could not be negative");
+        Assert::lessThanEq($price, 10000000000, "Price too high");
+        // todo round price
     }
 
     public function equal(Cost $cost)

@@ -3,9 +3,9 @@
 
 require_once dirname(__FILE__).'/../var/SymfonyRequirements.php';
 
-$lineSize            = 70;
+$lineSize = 70;
 $symfonyRequirements = new SymfonyRequirements();
-$iniPath             = $symfonyRequirements->getPhpIniConfigPath();
+$iniPath = $symfonyRequirements->getPhpIniConfigPath();
 
 echo_title('Symfony Requirements Checker');
 
@@ -53,7 +53,7 @@ if ($checkPassed) {
     }
 }
 
-if ( ! empty($messages['warning'])) {
+if (!empty($messages['warning'])) {
     echo_title('Optional recommendations to improve your setup', 'yellow');
 
     foreach ($messages['warning'] as $helpText) {
@@ -99,24 +99,24 @@ function echo_title($title, $style = null)
 function echo_style($style, $message)
 {
     // ANSI color codes
-    $styles   = array(
-        'reset'   => "\033[0m",
-        'red'     => "\033[31m",
-        'green'   => "\033[32m",
-        'yellow'  => "\033[33m",
-        'error'   => "\033[37;41m",
+    $styles = array(
+        'reset' => "\033[0m",
+        'red' => "\033[31m",
+        'green' => "\033[32m",
+        'yellow' => "\033[33m",
+        'error' => "\033[37;41m",
         'success' => "\033[37;42m",
-        'title'   => "\033[34m",
+        'title' => "\033[34m",
     );
     $supports = has_color_support();
 
-    echo ($supports ? $styles[$style] : '').$message.($supports ? $styles['reset'] : '');
+    echo($supports ? $styles[$style] : '').$message.($supports ? $styles['reset'] : '');
 }
 
 function echo_block($style, $title, $message)
 {
     $message = ' '.trim($message).' ';
-    $width   = strlen($message);
+    $width = strlen($message);
 
     echo PHP_EOL.PHP_EOL;
 
